@@ -43,7 +43,7 @@ claude mcp add serena -- serena start-mcp-server --context claude-code --project
 
 ## Skills
 
-[SKILLS.md](SKILLS.md): how to install them, the 20 most installed, browser verification, and one per stack.
+[SKILLS.md](SKILLS.md): install commands and the list.
 
 ## Config
 
