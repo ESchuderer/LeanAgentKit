@@ -1,6 +1,6 @@
 # LeanAgentKit
 
-Global rules, settings, tools, project templates, and skills for Claude Code and Codex.
+Global rules, settings, tools, and skills for Claude Code and Codex.
 
 ## Install
 
