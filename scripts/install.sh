@@ -14,7 +14,6 @@ run 40-ponytail.sh
 run 50-mcp.sh
 run 60-indexers.sh
 run 70-lsp.sh
-run 80-skills.sh
 
 printf '\nManual: in Codex run /hooks and trust the ponytail hooks. Restart Claude Code and Codex.\n'
 [ -z "$failed" ] || { printf 'Failed:%s\n' "$failed"; exit 1; }

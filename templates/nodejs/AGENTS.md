@@ -14,6 +14,9 @@
 - Prefer built-ins over dependencies: `node:fs/promises`, `node:path`, global `fetch`, `node:test`.
 - Set `engines.node` in `package.json`; commit `package-lock.json`; CI uses `npm ci`.
 
+## Skills
+- `npx skills add mcollina/skills@nodejs-core`
+
 ## Pitfalls
 - TODO
 

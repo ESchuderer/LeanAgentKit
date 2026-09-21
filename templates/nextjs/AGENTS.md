@@ -22,7 +22,7 @@ Next.js 16.3+ writes its own managed block (BEGIN:nextjs-agent-rules) into this 
 { "mcpServers": { "next-devtools": { "command": "npx", "args": ["-y", "next-devtools-mcp@latest"] } } }
 ```
 
-- Official skills: `npx skills add vercel/next.js --skill next-dev-loop`, then prompt: After every edit, verify the page still works at runtime using the next-dev-loop Skill.
+- Official skills: `npx skills add vercel/next.js@next-dev-loop`, then prompt: After every edit, verify the page still works at runtime using the next-dev-loop Skill.
 
 ## Layout
 - Routes in `app/`: `page.tsx`, `layout.tsx`, `route.ts`; the root layout owns `<html>` and `<body>`. Static files in `public/`. Import alias `@/*`.

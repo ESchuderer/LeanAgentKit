@@ -15,10 +15,13 @@
 - `src/pages/` file routes, `src/content/` collection entries, `src/content.config.ts` collection schemas, `src/components/`, `src/layouts/`, `public/` served as-is, `astro.config.mjs`.
 
 ## Conventions
-- Content collections: `defineCollection` with a `glob` or `file` loader and a zod schema; query with `getCollection` and `getEntry`; `render(entry)` gives `<Content />` and headings. Collections generate no routes by themselves. Skill: `/astro-content` or `$astro-content`.
+- Content collections: `defineCollection` with a `glob` or `file` loader and a zod schema; query with `getCollection` and `getEntry`; `render(entry)` gives `<Content />` and headings. Collections generate no routes by themselves.
 
 ## Docs
 - https://docs.astro.build/en/reference/cli-reference/, https://docs.astro.build/en/guides/content-collections/
+
+## Skills
+- `npx skills add astrolicious/agent-skills@astro` (community)
 
 ## Pitfalls
 - TODO

@@ -43,9 +43,16 @@ claude mcp add serena -- serena start-mcp-server --context claude-code --project
 
 ## Skills
 
-`skills/`: `verify-ui`, `medusa-module`, `payload-collection`, `astro-content`, `tinacms-schema`. The install copies them to `~/.claude/skills/` and `~/.agents/skills/`. Invoke with `/name` in Claude Code, `$name` in Codex. https://code.claude.com/docs/en/skills, https://learn.chatgpt.com/docs/build-skills
+Skills come from their authors through the skills.sh registry: `npx skills find <keyword>` searches, `npx skills add <owner/repo@skill>` installs into the current project (`-g` for all projects) for Claude Code, Codex, and 75+ agents. https://github.com/vercel-labs/skills, https://skills.sh
 
-Skills from other repos: `npx skills add <owner/repo> --skill <name>` (Claude Code, Codex, and 75+ agents). Next.js ships its own: `npx skills add vercel/next.js --skill next-dev-loop`. https://github.com/vercel-labs/skills
+- Next.js (Vercel): `vercel/next.js@next-dev-loop`, plus the cache-components and partial-prefetching skills. https://nextjs.org/docs/app/guides/ai-agents
+- Medusa (Medusa): `medusajs/medusa-agent-skills@building-with-medusa`, `@storefront-best-practices`, `@building-admin-dashboard-customizations`
+- Payload (Payload): `payloadcms/payload@payload`, `payloadcms/skills@cms-migration`
+- Playwright (Microsoft): `microsoft/playwright-cli@playwright-cli`, a CLI alternative to the Playwright MCP server for browser checks
+- Astro (community, astrolicious): `astrolicious/agent-skills@astro`
+- TinaCMS (community): `jezweb/claude-skills@tinacms`
+- Node.js (Matteo Collina): `mcollina/skills@nodejs-core`
+- Python with uv (community): `mindrally/skills@python-uv`
 
 ## Config
 

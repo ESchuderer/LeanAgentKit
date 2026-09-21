@@ -17,6 +17,9 @@
 ## Docs
 - https://docs.astral.sh/uv/guides/projects/, https://docs.astral.sh/ruff/, https://docs.pytest.org/
 
+## Skills
+- `npx skills add mindrally/skills@python-uv` (community)
+
 ## Pitfalls
 - TODO
 
