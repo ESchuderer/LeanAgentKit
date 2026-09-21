@@ -32,7 +32,7 @@ After the run: in Codex run `/hooks` and trust the Ponytail hooks; restart both 
 
 ## Per repository
 
-Templates: copy `templates/<stack>/AGENTS.md` and `templates/CLAUDE.md` into the repo. Stacks: nextjs, medusa, astro, tinacms, payload, nodejs, python. Next.js 16.3+ writes its own block into AGENTS.md on `next dev`; the template goes outside it.
+Project instructions go in the repo's `AGENTS.md` with `CLAUDE.md` containing `@AGENTS.md`; Next.js 16.3+ generates both itself on `next dev`. https://nextjs.org/docs/app/guides/ai-agents
 
 One indexer per repo, never both:
 
