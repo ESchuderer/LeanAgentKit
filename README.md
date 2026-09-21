@@ -1,6 +1,6 @@
 # LeanAgentKit
 
-Global rules, settings, tools, and skills for Claude Code and Codex.
+The lean architecture for AI coding. Global constraints optimized for pure execution.
 
 ## Install
 
