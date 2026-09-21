@@ -43,16 +43,7 @@ claude mcp add serena -- serena start-mcp-server --context claude-code --project
 
 ## Skills
 
-Skills come from their authors through the skills.sh registry: `npx skills find <keyword>` searches, `npx skills add <owner/repo@skill>` installs into the current project (`-g` for all projects) for Claude Code, Codex, and 75+ agents. https://github.com/vercel-labs/skills, https://skills.sh
-
-- Next.js (Vercel): `vercel/next.js@next-dev-loop`, plus the cache-components and partial-prefetching skills. https://nextjs.org/docs/app/guides/ai-agents
-- Medusa (Medusa): `medusajs/medusa-agent-skills@building-with-medusa`, `@storefront-best-practices`, `@building-admin-dashboard-customizations`
-- Payload (Payload): `payloadcms/payload@payload`, `payloadcms/skills@cms-migration`
-- Playwright (Microsoft): `microsoft/playwright-cli@playwright-cli`, a CLI alternative to the Playwright MCP server for browser checks
-- Astro (community, astrolicious): `astrolicious/agent-skills@astro`
-- TinaCMS (community): `jezweb/claude-skills@tinacms`
-- Node.js (Matteo Collina): `mcollina/skills@nodejs-core`
-- Python with uv (community): `mindrally/skills@python-uv`
+[SKILLS.md](SKILLS.md): how to install them, the 20 most installed, browser verification, and one per stack.
 
 ## Config
 
