@@ -1,6 +1,6 @@
 # Skills
 
-A skill is a `SKILL.md` instruction set the agent loads on demand. Take them from their authors. The `skills` CLI installs into the current project (`-g` for every project) for Claude Code, Codex, and 75+ agents: https://github.com/vercel-labs/skills
+A skill is a `SKILL.md` instruction set the agent loads on demand. The `skills` CLI installs into the current project (`-g` for every project) for Claude Code, Codex, and 75+ agents: https://github.com/vercel-labs/skills
 
 ```sh
 npx skills find <keyword>
@@ -8,11 +8,9 @@ npx skills add <owner/repo@skill>
 npx skills add <owner/repo> --list     # every skill in a repo, with descriptions
 ```
 
-Install counts are from the registry on 2026-09-22; descriptions are the authors' own, shortened.
-
 ## Top 20
 
-| Skill | Installs | Does |
+| Skill | Installs (2026-09-22) | Does |
 |---|---|---|
 | [vercel-labs/skills@find-skills](https://github.com/vercel-labs/skills) | 3.5M | finds and installs a skill when you ask "is there a skill for X" |
 | [mattpocock/skills@grill-me](https://github.com/mattpocock/skills) | 1.2M | a relentless interview to sharpen a plan or design |
@@ -39,11 +37,10 @@ Whole sets: `mattpocock/skills@setup-matt-pocock-skills` (870.8K) configures a r
 
 ## Verify in a browser
 
-| Skill | Installs | Does |
+| Skill | Installs (2026-09-22) | Does |
 |---|---|---|
 | [microsoft/playwright-cli@playwright-cli](https://github.com/microsoft/playwright-cli) | 161.7K | automate browser interactions and Playwright tests from a CLI |
 | [anthropics/skills@webapp-testing](https://github.com/anthropics/skills) | 161.1K | Playwright toolkit for local web apps: verify, debug, screenshots, browser logs |
-| [currents-dev/playwright-best-practices-skill@playwright-best-practices](https://github.com/currents-dev/playwright-best-practices-skill) | 84.8K | community |
 
 ## Per stack
 
@@ -52,10 +49,8 @@ Whole sets: `mattpocock/skills@setup-matt-pocock-skills` (870.8K) configures a r
 | Next.js | [vercel/next.js@next-dev-loop](https://github.com/vercel/next.js/tree/canary/skills), plus the cache-components adoption and optimizer and partial-prefetching adoption skills. https://nextjs.org/docs/app/guides/ai-agents |
 | Medusa | [medusajs/medusa-agent-skills](https://github.com/medusajs/medusa-agent-skills): `@building-with-medusa`, `@storefront-best-practices`, `@building-admin-dashboard-customizations` |
 | Payload | [payloadcms/payload@payload](https://github.com/payloadcms/payload), [payloadcms/skills@cms-migration](https://github.com/payloadcms/skills) |
-| Astro | [astrolicious/agent-skills@astro](https://github.com/astrolicious/agent-skills) (community, 15.6K) |
-| TinaCMS | [jezweb/claude-skills@tinacms](https://github.com/jezweb/claude-skills) (community, 308) |
-| Node.js | [mcollina/skills@nodejs-core](https://github.com/mcollina/skills) (Node.js TSC member) |
-| Python with uv | [mindrally/skills@python-uv](https://github.com/mindrally/skills) (community, 915) |
-| TypeScript | [wshobson/agents@typescript-advanced-types](https://github.com/wshobson/agents) (community, 78K) |
-
-Left out of the top list on purpose: `juliusbrussee/caveman` (removed from this setup), and the video, Lark, and Azure skills that fill the rest of the leaderboard.
+| Astro | [astrolicious/agent-skills@astro](https://github.com/astrolicious/agent-skills) (15.6K) |
+| TinaCMS | [jezweb/claude-skills@tinacms](https://github.com/jezweb/claude-skills) (308) |
+| Node.js | [mcollina/skills@nodejs-core](https://github.com/mcollina/skills) |
+| Python with uv | [mindrally/skills@python-uv](https://github.com/mindrally/skills) (915) |
+| TypeScript | [wshobson/agents@typescript-advanced-types](https://github.com/wshobson/agents) (78K) |

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Reverses what scripts/install.sh recorded in ~/.leanagentkit/installed.txt, nothing else.
+# Reverses scripts/install.sh step by step with each tool's own uninstall command.
 set -u
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd); export ROOT
 BACKUP_DIR="${LAK_STATE_DIR:-$HOME/.leanagentkit}/backups/$(date +%Y%m%d-%H%M%S)-uninstall"; export BACKUP_DIR

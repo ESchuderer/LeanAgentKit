@@ -69,7 +69,7 @@ analytics.enabled = false
 
 - Plan mode before non-trivial changes: `Shift+Tab` until `plan mode on`, or `claude --permission-mode plan`. Reads and proposes, edits nothing until approved. https://code.claude.com/docs/en/common-workflows
 - `/code-review` before committing. `/simplify` (over-engineering, reuse) and `/security-review` are present in Claude Code 2.1.269. https://code.claude.com/docs/en/skills
-- `/clear` between unrelated tasks. Carried-over context is the largest avoidable cost. https://code.claude.com/docs/en/costs
+- `/clear` between unrelated tasks. https://code.claude.com/docs/en/costs
 - `/advisor opus` (or `fable`): a stronger model reviews plans and work while `sonnet` does the typing. Subscription and API only; its tokens count toward the plan. https://code.claude.com/docs/en/advisor
 - `/model opusplan`: Opus in plan mode, Sonnet for execution. `/effort` per task: low for routine edits, high for hard debugging. https://code.claude.com/docs/en/model-config
 - Never set `DISABLE_TELEMETRY`, `DO_NOT_TRACK`, `DISABLE_GROWTHBOOK`, or `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`: each turns off the advisor and Remote Control. https://code.claude.com/docs/en/env-vars
