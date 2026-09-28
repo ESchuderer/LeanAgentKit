@@ -5,6 +5,7 @@ set -u
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd); export ROOT
 BACKUP_DIR="${LAK_STATE_DIR:-$HOME/.leanagentkit}/backups/$(date +%Y%m%d-%H%M%S)-install"; export BACKUP_DIR
 failed=""
+command -v codex >/dev/null 2>&1 || npm i -g @openai/codex
 run() { printf '\n== %s\n' "$1"; sh "$ROOT/scripts/install/$1" || failed="$failed $1"; }
 
 run 10-rules.sh

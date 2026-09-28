@@ -9,7 +9,7 @@ sh scripts/install.sh      # Windows: from Git Bash. Needs git, node, and the cl
 sh scripts/uninstall.sh
 ```
 
-One file per step in `scripts/install/` and `scripts/uninstall/`; delete a line in `scripts/install.sh` to skip a step. Each step calls the tool's own installer. Steps: rules, settings, RTK, Ponytail, MCP servers (Context7, Playwright), codegraph and Serena CLIs, LSP plugins, skills. Edited files are backed up to `~/.leanagentkit/backups/`.
+One file per step in `scripts/install/` and `scripts/uninstall/`; delete a line in `scripts/install.sh` to skip a step. Each step calls the tool's own installer. Steps: rules, settings, RTK, Ponytail, MCP servers (Context7, Playwright), codegraph CLI, LSP plugins, skills. Edited files are backed up to `~/.leanagentkit/backups/`.
 
 After the run: in Codex run `/hooks` and trust the Ponytail hooks; restart both agents.
 
@@ -25,21 +25,38 @@ After the run: in Codex run `/hooks` and trust the Ponytail hooks; restart both 
 - RTK: filters shell output before it reaches the model. Bash tool only. https://github.com/rtk-ai/rtk
 - Ponytail: makes the agent write the minimal code that works (YAGNI, standard library first). https://github.com/DietrichGebert/ponytail
 - Context7 MCP: current library docs on demand; write "use context7" in the prompt. Free API key for higher limits: export `CONTEXT7_API_KEY` before installing. https://github.com/upstash/context7
-- Playwright MCP: the agent drives a browser to verify UI changes. https://github.com/microsoft/playwright-mcp
+- Playwright MCP: the agent drives a browser to verify UI changes. In a container: headless Chrome, installed by the script. https://github.com/microsoft/playwright-mcp
 - codegraph: repository graph over MCP, one query instead of many file reads. Per repository. https://github.com/colbymchenry/codegraph
-- Serena: LSP-backed symbol lookup and editing over MCP. Per repository. https://github.com/oraios/serena
 - Code intelligence plugins (Claude Code): `typescript-lsp`, `pyright-lsp`. Diagnostics after every edit, go to definition, find references. https://code.claude.com/docs/en/discover-plugins
 
 ## Per repository
 
 Project instructions go in the repo's `AGENTS.md` with `CLAUDE.md` containing `@AGENTS.md`; Next.js 16.3+ generates both itself on `next dev`. https://nextjs.org/docs/app/guides/ai-agents
 
-One indexer per repo, never both:
+codegraph:
 
 ```sh
 codegraph init --yes && codegraph install --target=claude,codex --location=local --no-permissions --yes
-claude mcp add serena -- serena start-mcp-server --context claude-code --project "$(pwd)"    # Codex: serena setup codex
 ```
+
+## Dev containers (VS Code)
+
+Agents and tools run in a Linux container; the repo is bind-mounted. https://code.claude.com/docs/en/devcontainer
+
+1. Docker:
+   - CachyOS/Arch: `sudo pacman -S docker docker-buildx && sudo systemctl enable --now docker && sudo usermod -aG docker $USER`, then log out and in. https://wiki.archlinux.org/title/Docker
+   - Windows: `winget install Docker.DockerDesktop` (WSL 2 backend); keep repos in the WSL filesystem. https://code.visualstudio.com/docs/devcontainers/containers#_installation
+2. `code --install-extension ms-vscode-remote.remote-containers`
+3. VS Code user `settings.json`, applied to every dev container: adds Claude Code, clones this repo, runs `scripts/install.sh` (installs Codex if missing). https://code.visualstudio.com/docs/devcontainers/containers#_personalizing-with-dotfile-repositories
+
+   ```json
+   "dev.containers.defaultFeatures": { "ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {} },
+   "dotfiles.repository": "ESchuderer/LeanAgentKit",
+   "dotfiles.installCommand": "scripts/install.sh"
+   ```
+
+4. Repo without `.devcontainer/`: `Dev Containers: Add Dev Container Configuration Files`, any template. Then `Dev Containers: Reopen in Container`.
+5. Sign in per container: `claude`, `codex login --device-auth`. Rebuilds drop the login.
 
 ## Skills
 
@@ -52,7 +69,7 @@ Claude Code, `~/.claude/settings.json` (https://code.claude.com/docs/en/settings
 ```json
 {
   "model": "sonnet",
-  "env": { "DISABLE_ERROR_REPORTING": "1", "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1", "SERENA_USAGE_REPORTING": "false" },
+  "env": { "DISABLE_ERROR_REPORTING": "1", "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1" },
   "remoteControlAtStartup": true
 }
 ```

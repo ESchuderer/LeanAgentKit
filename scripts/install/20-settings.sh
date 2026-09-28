@@ -13,7 +13,6 @@ s.model ??= "sonnet";
 s.env ??= {};
 s.env.DISABLE_ERROR_REPORTING ??= "1";
 s.env.CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY ??= "1";
-s.env.SERENA_USAGE_REPORTING ??= "false";
 s.remoteControlAtStartup ??= true;
 fs.writeFileSync(f, JSON.stringify(s, null, 2) + "\n");
 NODE
