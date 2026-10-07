@@ -9,7 +9,7 @@ sh scripts/install.sh      # Windows: from Git Bash. Needs git, node, and the cl
 sh scripts/uninstall.sh
 ```
 
-One file per step in `scripts/install/` and `scripts/uninstall/`; delete a line in `scripts/install.sh` to skip a step. Each step calls the tool's own installer. Steps: rules, settings, RTK, Ponytail, MCP servers (Context7, Playwright), codegraph CLI, LSP plugins, skills. Edited files are backed up to `~/.leanagentkit/backups/`.
+One file per step in `scripts/install/` and `scripts/uninstall/`; delete a line in `scripts/install.sh` to skip a step. Each step calls the tool's own installer. Steps: rules, settings, RTK, Ponytail, MCP servers (Context7, Playwright), codegraph CLI, LSP plugins, skills (`project-*` from `skills/`, ECC `documentation-lookup`). Edited files are backed up to `~/.leanagentkit/backups/`.
 
 After the run: in Codex run `/hooks` and trust the Ponytail hooks; restart both agents.
 
@@ -24,20 +24,41 @@ After the run: in Codex run `/hooks` and trust the Ponytail hooks; restart both 
 
 - RTK: filters shell output before it reaches the model. Bash tool only. https://github.com/rtk-ai/rtk
 - Ponytail: makes the agent write the minimal code that works (YAGNI, standard library first). https://github.com/DietrichGebert/ponytail
-- Context7 MCP: current library docs on demand; write "use context7" in the prompt. Free API key for higher limits: export `CONTEXT7_API_KEY` before installing. https://github.com/upstash/context7
+- Context7 MCP: current library docs on demand; the ECC `documentation-lookup` skill calls it for library and API questions. Free API key for higher limits: export `CONTEXT7_API_KEY` before installing. https://github.com/upstash/context7
 - Playwright MCP: the agent drives a browser to verify UI changes. In a container: headless Chrome, installed by the script. https://github.com/microsoft/playwright-mcp
 - codegraph: repository graph over MCP, one query instead of many file reads. Per repository. https://github.com/colbymchenry/codegraph
 - Code intelligence plugins (Claude Code): `typescript-lsp`, `pyright-lsp`. Diagnostics after every edit, go to definition, find references. https://code.claude.com/docs/en/discover-plugins
 
 ## Per repository
 
-Project instructions go in the repo's `AGENTS.md` with `CLAUDE.md` containing `@AGENTS.md`; Next.js 16.3+ generates both itself on `next dev`. https://nextjs.org/docs/app/guides/ai-agents
+Skills in [skills/](skills/), installed globally by the script. Claude Code: `/<name>`, Codex: `$<name>`. Each shows one plan and applies it after one confirmation.
 
-codegraph:
+| Skill | Does |
+|---|---|
+| `project-setup` | first setup of a new or existing repository. Asks first: ECC install route, codegraph or not; new project also type, stack, data, extras, then scaffolds with the framework's generator |
+| `project-add` | later changes: shows what is installed, then adds, updates, or removes skills, ECC extras, codegraph, `AGENTS.md` commands |
+| `project-instructions` | `AGENTS.md` with the project's commands, `CLAUDE.md` containing `@AGENTS.md`. Next.js 16.3+ generates both on `next dev`. https://nextjs.org/docs/app/guides/ai-agents |
+| `project-codegraph` | codegraph index and MCP wiring for both agents: set up, sync, remove |
+| `project-skills` | skills for the detected stack, project scope: ECC base (`tdd-workflow`, `verification-loop`) plus the matching ones |
 
-```sh
-codegraph init --yes && codegraph install --target=claude,codex --location=local --no-permissions --yes
-```
+`project-setup` and `project-add` run the other three.
+
+## ECC
+
+Everything Claude Code: 293 skills, 69 agents, rules, hooks; Claude Code and Codex. https://github.com/affaan-m/ECC
+
+Every installed skill and agent puts its name and description in context each session; ECC's skill descriptions total about 100 KB (roughly 25k tokens).
+
+| Route (ECC 2.2.3, project target, no hooks) | Footprint | Used |
+|---|---|---|
+| `ecc@ecc` plugin | all skills (Codex plugin: 281) and hooks | no |
+| `install --profile minimal` / `full` | 489 / 978 files; `minimal` includes 69 agents and 122 rule files | no |
+| `install --skills <id>` | one skill per ID; 15 IDs pull a whole module (`tdd-workflow`: 113 files) | `project-skills`, ECC installer route (Claude Code) |
+| `npx skills add affaan-m/ECC -s <id>` | one skill per ID, both agents | `project-skills`, default route |
+
+- Installer route: adds `ecc doctor`, `repair`, `uninstall`; sets `"includeCoAuthoredBy": false` in `.claude/settings.json` when no attribution setting exists. Its Codex target writes to `~/.codex` only, so Codex gets project skills through the skills CLI.
+- ECC context profiles (`ecc profile`, `lean@1`): read-only preview in 2.2.3.
+- List: `npx skills add affaan-m/ECC --list`.
 
 ## Dev containers (VS Code)
 

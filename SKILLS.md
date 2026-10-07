@@ -7,14 +7,17 @@ npx skills find <keyword>
 npx skills add <owner/repo> --list     # every skill in a repo, with descriptions
 ```
 
+The `project-setup` and `project-add` skills install the stack-specific ones per project ([README](README.md#per-repository)). ECC ([README](README.md#ecc)): `npx skills add affaan-m/ECC --list`.
+
 | Skill | Install | Does |
 |---|---|---|
 | [find-skills](https://github.com/vercel-labs/skills) | `npx skills add vercel-labs/skills@find-skills` | finds and installs a skill when you ask "is there a skill for X" |
 | [grill-me](https://github.com/mattpocock/skills) | `npx skills add mattpocock/skills@grill-me` | a relentless interview to sharpen a plan or design |
-| [tdd](https://github.com/mattpocock/skills) | `npx skills add mattpocock/skills@tdd` | test-first features and bug fixes, red-green-refactor, integration tests |
+| [tdd-workflow](https://github.com/affaan-m/ECC/tree/main/skills/tdd-workflow) | `npx skills add affaan-m/ECC -s tdd-workflow` | test-first features and bug fixes: failing test, smallest change to green, refactor |
+| [verification-loop](https://github.com/affaan-m/ECC/tree/main/skills/verification-loop) | `npx skills add affaan-m/ECC -s verification-loop` | build, types, lint, tests, security grep, diff review; PASS/FAIL report |
 | [frontend-design](https://github.com/anthropics/skills) | `npx skills add anthropics/skills@frontend-design` | distinctive visual design: aesthetic direction, typography, no templated defaults |
 | [agent-browser](https://github.com/vercel-labs/agent-browser) | `npx skills add vercel-labs/agent-browser@agent-browser` | browser automation CLI: navigate, fill forms, click, screenshot, test web apps |
-| [vercel-react-best-practices](https://github.com/vercel-labs/agent-skills) | `npx skills add vercel-labs/agent-skills@vercel-react-best-practices` | React and Next.js performance guidelines from Vercel Engineering |
+| [react-performance](https://github.com/affaan-m/ECC/tree/main/skills/react-performance) | `npx skills add affaan-m/ECC -s react-performance` | React and Next.js performance rules, adapted from Vercel's React Best Practices |
 | [teach](https://github.com/mattpocock/skills) | `npx skills add mattpocock/skills@teach` | teaches you a skill or concept inside the workspace |
 | [domain-modeling](https://github.com/mattpocock/skills) | `npx skills add mattpocock/skills@domain-modeling` | build and sharpen the project's domain model, CONTEXT.md, ADRs |
 | [web-design-guidelines](https://github.com/vercel-labs/agent-skills) | `npx skills add vercel-labs/agent-skills@web-design-guidelines` | review UI code against Web Interface Guidelines: accessibility, UX |
