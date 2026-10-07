@@ -6,14 +6,20 @@ set -eu
 f=$CLAUDE_DIR/settings.json
 [ -f "$f" ] || printf '{}\n' > "$f"
 backup "$f"
-node - "$f" <<'NODE'
-const fs = require("fs"); const f = process.argv[2];
+sl=$CLAUDE_DIR/leanagentkit-statusline.js
+cp "$ROOT/scripts/statusline.js" "$sl"
+win && sl=$(cygpath -m "$sl")  # status line commands need forward slashes on Windows
+node - "$f" "$sl" <<'NODE'
+const fs = require("fs"); const [f, sl] = process.argv.slice(2);
 const s = JSON.parse(fs.readFileSync(f, "utf8").replace(/^﻿/, "") || "{}");
 s.model ??= "sonnet";
 s.env ??= {};
 s.env.DISABLE_ERROR_REPORTING ??= "1";
 s.env.CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY ??= "1";
 s.remoteControlAtStartup ??= true;
+s.advisorModel ??= "opus";
+s.showClearContextOnPlanAccept ??= true;
+s.statusLine ??= { type: "command", command: `node "${sl}"` };
 fs.writeFileSync(f, JSON.stringify(s, null, 2) + "\n");
 NODE
 say "claude settings: ok"

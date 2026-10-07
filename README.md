@@ -91,9 +91,16 @@ Claude Code, `~/.claude/settings.json` (https://code.claude.com/docs/en/settings
 {
   "model": "sonnet",
   "env": { "DISABLE_ERROR_REPORTING": "1", "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1" },
-  "remoteControlAtStartup": true
+  "remoteControlAtStartup": true,
+  "advisorModel": "opus",
+  "showClearContextOnPlanAccept": true,
+  "statusLine": { "type": "command", "command": "node \"<home>/.claude/leanagentkit-statusline.js\"" }
 }
 ```
+
+- `advisorModel`: a stronger model advises at decision points (plans, recurring errors, before declaring done) while `sonnet` does the typing; Claude decides when. Not attached when the main model ranks above it (Fable). Its tokens count toward the plan. https://code.claude.com/docs/en/advisor
+- `showClearContextOnPlanAccept`: approving a plan offers to clear the context before execution.
+- `statusLine`: [scripts/statusline.js](scripts/statusline.js), for example `Sonnet (medium) | ctx 23% | 5h 24% until 14:00 | week 41%`. Plan limits appear on Pro and Max. No token cost. https://code.claude.com/docs/en/statusline
 
 Codex, `~/.codex/config.toml` (https://learn.chatgpt.com/docs/config-file/config-reference):
 
@@ -106,16 +113,13 @@ analytics.enabled = false
 ## Tips
 
 - Plan mode before non-trivial changes: `Shift+Tab` until `plan mode on`, or `claude --permission-mode plan`. Reads and proposes, edits nothing until approved. https://code.claude.com/docs/en/common-workflows
-- `/code-review` before committing. `/simplify` (over-engineering, reuse) and `/security-review` are present in Claude Code 2.1.269. https://code.claude.com/docs/en/skills
-- `/clear` between unrelated tasks. https://code.claude.com/docs/en/costs
-- `/advisor opus` (or `fable`): a stronger model reviews plans and work while `sonnet` does the typing. Subscription and API only; its tokens count toward the plan. https://code.claude.com/docs/en/advisor
+- Global rules: the agent suggests `/clear` when a prompt starts an unrelated task, and reviews code commits before it pushes or opens a pull request. `/simplify` (over-engineering, reuse) and `/security-review` are present in Claude Code 2.1.269. https://code.claude.com/docs/en/skills
 - `/model opusplan`: Opus in plan mode, Sonnet for execution. `/effort` per task: low for routine edits, high for hard debugging. https://code.claude.com/docs/en/model-config
 - Never set `DISABLE_TELEMETRY`, `DO_NOT_TRACK`, `DISABLE_GROWTHBOOK`, or `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`: each turns off the advisor and Remote Control. https://code.claude.com/docs/en/env-vars
-- A `haiku` subagent in `~/.claude/agents/` that runs tests and builds and returns only failures keeps that output out of the main context. https://code.claude.com/docs/en/sub-agents
 - One project file for both agents: instructions in `AGENTS.md`, `CLAUDE.md` containing only `@AGENTS.md`. https://code.claude.com/docs/en/memory
 - Auto memory: corrections you give persist per project in `~/.claude/projects/<project>/memory/`. Same source.
 - `/fewer-permission-prompts` writes an allowlist of read-only commands to the project settings (bundled in Claude Code 2.1.269).
 - Codex: leave `service_tier` unset; `"fast"` costs 2.5x credits on GPT-6 Astra. https://learn.chatgpt.com/docs/agent-configuration/speed
 - Codex: plugin hooks must be trusted in `/hooks` again after every plugin update. https://learn.chatgpt.com/docs/hooks
-- Plan usage: `/usage` in Claude Code, `/status` in Codex. From local logs: `npx ccusage@latest` (https://github.com/ccusage/ccusage).
+- Plan usage: status line and `/usage` in Claude Code, `/status` in Codex. From local logs: `npx ccusage@latest` (https://github.com/ccusage/ccusage).
 - A console window per prompt or tool call on Windows is a hook: `hooks` in `~/.claude/settings.json`, plugin hooks (Ponytail has three), `~/.codex/hooks.json`.
