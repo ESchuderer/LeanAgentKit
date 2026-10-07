@@ -62,7 +62,7 @@ npx -y skills add affaan-m/ECC -s <skill> -s <skill> -a claude-code -a codex -y
 npx -y skills add <owner/repo> -s <skill> -a claude-code -a codex -y
 ```
 
-Writes `.agents/skills/<skill>/` (Codex), a symlink in `.claude/skills/` (Claude Code), and `skills-lock.json`. Update: `npx skills update -p`. Remove: `npx skills remove <skill> -a claude-code -a codex -y`. Restore from the lockfile: `npx skills experimental_install`.
+Writes `.agents/skills/<skill>/` (Codex), a symlink in `.claude/skills/` (Claude Code), and `skills-lock.json`. Update: `npx skills update -p` (installer route: step 5 below). Remove: `npx skills remove <skill> -a claude-code -a codex -y`. Restore from the lockfile: `npx skills experimental_install`.
 
 ### ECC installer, per skill (Claude Code)
 
@@ -70,6 +70,7 @@ Writes `.agents/skills/<skill>/` (Codex), a symlink in `.claude/skills/` (Claude
 2. Same command without `--dry-run`. Writes `.claude/skills/<skill>/`, `.claude/ecc/install-state.json`, and, if no attribution setting exists, `"includeCoAuthoredBy": false` in `.claude/settings.json` (turns off the Claude co-author trailer, stays after uninstall). Tell the user; delete the key to keep the trailer.
 3. Codex: the installer writes only to `~/.codex`, so install the same skills with the skills CLI and `-a codex`.
 4. Manage: `npx -y ecc-universal@latest list-installed`, `doctor`, `repair`, `uninstall --target claude-project`.
+5. Update: `npx skills check` and `npx skills update -p` skip every skill in a repository that also has installer copies ("Multiple current paths match"). Re-run the installs instead, which overwrite in place: step 2 with the `skill-<id>` modules from the install-state `operations`; `npx -y skills add <source> -s <skill> -a codex -y` for the Codex copies; `-a claude-code -a codex` for skills that are symlinks in `.claude/skills/`. To see what changed first, diff against a shallow clone of the source repository.
 
 ## ECC extras
 
