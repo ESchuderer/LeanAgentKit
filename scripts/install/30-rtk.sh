@@ -10,6 +10,6 @@ if ! have rtk; then
   fi
 fi
 rtk gain >/dev/null 2>&1 || { say "rtk missing or wrong package (rtk gain failed); open a new terminal and rerun"; exit 1; }
-have claude && rtk init -g --auto-patch --no-trust-filters
-have codex && rtk init -g --codex
+if cli claude; then rtk init -g --auto-patch --no-trust-filters; fi
+if cli codex; then rtk init -g --codex; fi
 rtk telemetry disable >/dev/null 2>&1 || true
