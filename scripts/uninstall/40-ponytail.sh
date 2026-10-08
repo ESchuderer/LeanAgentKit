@@ -2,5 +2,5 @@
 set -eu
 . "$ROOT/scripts/lib.sh"
 for s in "$CLAUDE_DIR"/plugins/cache/ponytail/ponytail/*/scripts/uninstall.js; do [ -f "$s" ] && node "$s"; done
-have claude && { claude plugin uninstall ponytail@ponytail || true; }
-have codex && { codex plugin remove ponytail || true; }
+if have claude; then claude plugin uninstall ponytail@ponytail || true; fi
+if have codex; then codex plugin remove ponytail || true; fi

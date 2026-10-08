@@ -20,7 +20,6 @@ run 70-lsp.sh
 run 80-skills.sh
 
 printf '\n'
-for a in claude codex; do have "$a" || say "$a CLI not on PATH: steps above skipped it (README, Requirements)."; done
 if have codex; then say "Manual: in Codex run /hooks and trust the ponytail hooks."; fi
 say "Restart Claude Code and Codex."
 [ -z "$failed" ] || { printf 'Failed:%s\n' "$failed"; exit 1; }
