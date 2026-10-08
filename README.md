@@ -14,7 +14,7 @@ Requirements:
 - The `claude` and `codex` CLIs on PATH, also when you use the VS Code extensions: the extensions do not put them on PATH, and the RTK, Ponytail, MCP, and LSP steps configure an agent only through its CLI. Claude Code: `curl -fsSL https://claude.ai/install.sh | bash` (https://code.claude.com/docs/en/setup). Codex: installed by the script when missing.
 - `npm i -g` without sudo. If npm's global folders are not writable (distribution Node.js, for example Arch): `npm config set prefix ~/.local` and `~/.local/bin` on PATH. https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally
 
-If the npm folder is not writable, the steps that need `npm i -g` fail with this fix. A step skips an agent whose CLI is missing and says so.
+If the npm folder is not writable, the steps that need `npm i -g` fail with this fix. Steps that need an agent's CLI skip it and say so.
 
 One file per step in `scripts/install/` and `scripts/uninstall/`; delete a line in `scripts/install.sh` to skip a step. Each step calls the tool's own installer. Steps: rules, settings, RTK, Ponytail, MCP servers (Context7, Playwright), codegraph CLI, ECC Memory Vault CLI, LSP plugins, skills (`project-*` from `skills/`, ECC `documentation-lookup` and `unified-memory`). Edited files are backed up to `~/.leanagentkit/backups/`.
 
