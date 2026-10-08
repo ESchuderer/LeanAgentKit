@@ -36,4 +36,4 @@
 - When a prompt starts a task unrelated to the conversation so far, add one line suggesting `/clear`, then do the task.
 
 ## Push and pull requests
-- Before running `git push` or opening a pull request that contains code changes, review the commits being pushed for correctness bugs (Claude Code: the `code-review` skill) If it finds issues, report them and wait for the user before pushing. Skip when only docs change.
+- Before running `git push` or opening a pull request that contains code changes, review the commits being pushed for correctness bugs (Claude Code: the `code-review` skill). If it finds issues, report them and wait for the user before pushing. Skip when only docs change.

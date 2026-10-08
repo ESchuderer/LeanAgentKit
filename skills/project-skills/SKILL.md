@@ -19,7 +19,7 @@ ECC base plus the matching rows. Skip installed skills. Show the list, one line 
 
 | Detected | Skills |
 |---|---|
-| ECC base, every code project | `affaan-m/ECC`: `tdd-workflow`, `verification-loop` (`documentation-lookup` is global) |
+| ECC base, every code project | `affaan-m/ECC`: `tdd-workflow`, `verification-loop` (`documentation-lookup` and `unified-memory` are global) |
 | React | `affaan-m/ECC`: `react-patterns`, `react-performance`, `react-testing` |
 | Next.js | `affaan-m/ECC`: `nextjs-turbopack`; `vercel/next.js`: `next-dev-loop` |
 | Vue / Nuxt | `affaan-m/ECC`: `vue-patterns` / `nuxt4-patterns` |

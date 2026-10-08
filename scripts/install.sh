@@ -14,6 +14,7 @@ run 30-rtk.sh
 run 40-ponytail.sh
 run 50-mcp.sh
 run 60-indexers.sh
+run 65-memory.sh
 run 70-lsp.sh
 run 80-skills.sh
 

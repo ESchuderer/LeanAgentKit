@@ -9,7 +9,7 @@ sh scripts/install.sh      # Windows: from Git Bash. Needs git, node, and the cl
 sh scripts/uninstall.sh
 ```
 
-One file per step in `scripts/install/` and `scripts/uninstall/`; delete a line in `scripts/install.sh` to skip a step. Each step calls the tool's own installer. Steps: rules, settings, RTK, Ponytail, MCP servers (Context7, Playwright), codegraph CLI, LSP plugins, skills (`project-*` from `skills/`, ECC `documentation-lookup`). Edited files are backed up to `~/.leanagentkit/backups/`.
+One file per step in `scripts/install/` and `scripts/uninstall/`; delete a line in `scripts/install.sh` to skip a step. Each step calls the tool's own installer. Steps: rules, settings, RTK, Ponytail, MCP servers (Context7, Playwright), codegraph CLI, ECC Memory Vault CLI, LSP plugins, skills (`project-*` from `skills/`, ECC `documentation-lookup` and `unified-memory`). Edited files are backed up to `~/.leanagentkit/backups/`.
 
 After the run: in Codex run `/hooks` and trust the Ponytail hooks; restart both agents.
 
@@ -27,6 +27,7 @@ After the run: in Codex run `/hooks` and trust the Ponytail hooks; restart both 
 - Context7 MCP: current library docs on demand; the ECC `documentation-lookup` skill calls it for library and API questions. Free API key for higher limits: export `CONTEXT7_API_KEY` before installing. https://github.com/upstash/context7
 - Playwright MCP: the agent drives a browser to verify UI changes. In a container: headless Chrome, installed by the script. https://github.com/microsoft/playwright-mcp
 - codegraph: repository graph over MCP, one query instead of many file reads. Per repository. https://github.com/colbymchenry/codegraph
+- ECC Memory Vault: `ecc memory save`, `handoff`, `search` pass work state between Claude Code and Codex as Markdown files in `<repo>/.ecc/memory/project/` (git-ignored) and `team/` (versioned); `~/.ecc/memory/` only with `--scope user`. The `unified-memory` skill tells both agents when to use it. CLI only; the optional MCP server (`ecc-memory-mcp`) is not registered. Package `ecc-universal`: 19.5 MB, 2805 files, no install scripts. https://github.com/affaan-m/ECC/blob/main/skills/unified-memory/SKILL.md
 - Code intelligence plugins (Claude Code): `typescript-lsp`, `pyright-lsp`. Diagnostics after every edit, go to definition, find references. https://code.claude.com/docs/en/discover-plugins
 
 ## Per repository
@@ -58,6 +59,7 @@ Every installed skill and agent puts its name and description in context each se
 
 - Installer route: adds `ecc doctor`, `repair`, `uninstall`; sets `"includeCoAuthoredBy": false` in `.claude/settings.json` when no attribution setting exists. Its Codex target writes to `~/.codex` only, so Codex gets project skills through the skills CLI.
 - ECC context profiles (`ecc profile`, `lean@1`): read-only preview in 2.2.3.
+- Hermes, ECC's operator shell for chat, cron, content, and business workflows: not used. https://github.com/affaan-m/ECC/blob/main/docs/HERMES-SETUP.md
 - List: `npx skills add affaan-m/ECC --list`.
 
 ## Dev containers (VS Code)
