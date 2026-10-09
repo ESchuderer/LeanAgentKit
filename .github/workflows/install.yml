@@ -1,0 +1,15 @@
+# Install and uninstall on a fresh runner with both agent CLIs, so a CLI or upstream change shows up here first.
+name: install
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4
+        with: { node-version: 22 }
+      - uses: astral-sh/setup-uv@d0d8abe699bfb85fec6de9f7adb5ae17292296ff  # v6, for the skill scan in 90-check.sh
+      - name: Claude Code CLI
+        run: curl -fsSL https://claude.ai/install.sh | bash && echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - run: sh scripts/install.sh full
+      - run: sh scripts/uninstall.sh

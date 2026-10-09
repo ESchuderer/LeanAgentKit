@@ -1,6 +1,6 @@
 #!/bin/sh
-# codegraph CLI. Wire it per repository (README, "Per repository").
+# codegraph CLI at the pinned version. Wire it per repository (README, "Per repository").
 set -eu
 . "$ROOT/scripts/lib.sh"
-have codegraph || npm_g @colbymchenry/codegraph
+npm_g "@colbymchenry/codegraph@$CODEGRAPH"
 codegraph telemetry off >/dev/null 2>&1 || true

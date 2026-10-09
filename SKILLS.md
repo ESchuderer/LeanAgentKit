@@ -43,3 +43,21 @@ The `project-setup` and `project-add` skills install the stack-specific ones per
 | [astro](https://github.com/astrolicious/agent-skills) | `npx skills add astrolicious/agent-skills@astro` | Astro: components, pages, SSR adapters, content collections, deployment, CLI |
 | [python-uv](https://github.com/mindrally/skills) | `npx skills add mindrally/skills@python-uv` | Python dependency management with uv |
 | [typescript-advanced-types](https://github.com/wshobson/agents) | `npx skills add wshobson/agents@typescript-advanced-types` | generics, conditional and mapped types, template literals, utility types |
+| [pr](https://github.com/mattpocock/skills) | `npx skills add mattpocock/skills@pr` | pull request body: evidence, merge risk |
+| [retro](https://github.com/mattpocock/skills) | `npx skills add mattpocock/skills@retro` | after a session: environment improvements, most severe first |
+| [prototype](https://github.com/mattpocock/skills) | `npx skills add mattpocock/skills@prototype` | throwaway prototype that answers a design question |
+| [wayfinder](https://github.com/mattpocock/skills) | `npx skills add mattpocock/skills@wayfinder` | plan large work as a map of decision tickets |
+| [to-tickets](https://github.com/mattpocock/skills) | `npx skills add mattpocock/skills@to-tickets` | break a plan or spec into tickets with blocking edges, tracker or local file |
+| [implement-spec](https://github.com/mattpocock/skills) | `npx skills add mattpocock/skills@implement-spec` | implement a whole spec on one branch with parallel subagents |
+| [improve-codebase-architecture](https://github.com/mattpocock/skills) | `npx skills add mattpocock/skills@improve-codebase-architecture` | scan for module-deepening opportunities, HTML report |
+| [writing-for-agents](https://github.com/mattpocock/skills) | `npx skills add mattpocock/skills@writing-for-agents` | write skills, `AGENTS.md`, and other agent-facing docs |
+| [doubt-driven-development](https://github.com/addyosmani/agent-skills) | `npx skills add addyosmani/agent-skills@doubt-driven-development` | adversarial fresh-context review of non-trivial decisions while work proceeds |
+| [constraint-driven-development](https://github.com/addyosmani/agent-skills) | `npx skills add addyosmani/agent-skills@constraint-driven-development` | quality bar in `CONSTRAINTS.md`, checks placed by cost, catches silenced checks and skipped tests |
+| [api-and-interface-design](https://github.com/addyosmani/agent-skills) | `npx skills add addyosmani/agent-skills@api-and-interface-design` | contract-first design, Hyrum's Law, error semantics, boundary validation |
+| [deprecation-and-migration](https://github.com/addyosmani/agent-skills) | `npx skills add addyosmani/agent-skills@deprecation-and-migration` | deprecation types, migration patterns, zombie code removal |
+| [observability-and-instrumentation](https://github.com/addyosmani/agent-skills) | `npx skills add addyosmani/agent-skills@observability-and-instrumentation` | structured logging, RED metrics, OpenTelemetry tracing, symptom-based alerting |
+| [ci-cd-and-automation](https://github.com/addyosmani/agent-skills) | `npx skills add addyosmani/agent-skills@ci-cd-and-automation` | shift-left testing, feature flags, quality-gate pipelines |
+| [shipping-and-launch](https://github.com/addyosmani/agent-skills) | `npx skills add addyosmani/agent-skills@shipping-and-launch` | pre-launch checklist, flag lifecycle, staged rollout, rollback |
+| [context-engineering](https://github.com/addyosmani/agent-skills) | `npx skills add addyosmani/agent-skills@context-engineering` | rules files and MCP integrations: the right information at the right time |
+
+addyosmani/agent-skills: a single-skill install leaves out the repository's shared `references/`; its other skills overlap this kit (TDD, code review, debugging, security, spec writing). mattpocock engineering skills need `setup-matt-pocock-skills` once per repository.

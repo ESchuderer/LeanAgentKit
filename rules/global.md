@@ -1,3 +1,5 @@
+A project instruction (`AGENTS.md`, `CLAUDE.md`) that conflicts with a rule here wins.
+
 ## Ask, do not assume
 - If a request is ambiguous or lacks context needed to do it correctly, stop and ask precise clarifying questions. Do not guess.
 - Non-interactive runs (headless, CI), where asking is impossible: state the assumption in one line, pick the safest reversible option, continue.
@@ -37,3 +39,12 @@
 
 ## Push and pull requests
 - Before running `git push` or opening a pull request that contains code changes, review the commits being pushed for correctness bugs (Claude Code: the `code-review` skill). If it finds issues, report them and wait for the user before pushing. Skip when only docs change.
+
+## SDLC
+- Understand: `AGENTS.md` and the code the change touches, before any edit.
+- Specify and plan: OpenSpec when the repository has `openspec/` (`openspec-propose`, then `openspec-apply-change`); otherwise plan mode for a non-trivial change.
+- Build: the smallest change that works; tests first where the repository has a test suite (`tdd-workflow` when installed).
+- Verify: build, types, lint, tests before reporting done (`verification-loop` when installed); report failures as they are.
+- Review and ship: code review before push (above); archive the OpenSpec change when it is done.
+- Hand off: `ecc memory handoff` when another agent or session continues the work (when installed).
+- A skill starts a phase directly: `/<skill>` (Claude Code), `$<skill>` (Codex); otherwise use the skill of the current phase.

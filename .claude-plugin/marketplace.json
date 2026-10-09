@@ -1,0 +1,12 @@
+{
+  "name": "leanagentkit",
+  "description": "Third-party plugins pinned to a commit by LeanAgentKit. Bump sha and ref here, then rerun scripts/install.sh.",
+  "owner": { "name": "ESchuderer", "url": "https://github.com/ESchuderer" },
+  "plugins": [
+    {
+      "name": "ponytail",
+      "description": "Lazy senior dev mode: the smallest change that works. https://github.com/DietrichGebert/ponytail",
+      "source": { "source": "github", "repo": "DietrichGebert/ponytail", "ref": "v5.1.0", "sha": "9cc65d03aa2da1db7121b912d03596409ee340b8" }
+    }
+  ]
+}

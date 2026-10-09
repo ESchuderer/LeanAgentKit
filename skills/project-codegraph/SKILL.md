@@ -7,7 +7,7 @@ description: "Set up, check, sync, or remove the codegraph code index for one re
 
 Run by `project-setup` or `project-add`: use their answers, ask only what is missing. Behavior below verified on codegraph 1.6.2 (`codegraph --version`). https://github.com/colbymchenry/codegraph
 
-CLI: installed by LeanAgentKit (`scripts/install/60-indexers.sh`), otherwise `npm i -g @colbymchenry/codegraph`.
+CLI: `scripts/install/60-indexers.sh` in LeanAgentKit (pinned version), otherwise `npm i -g @colbymchenry/codegraph@1.6.2`.
 
 ## Set up
 

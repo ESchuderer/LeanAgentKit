@@ -13,7 +13,7 @@ if (s.remoteControlAtStartup === true) delete s.remoteControlAtStartup;
 if (s.advisorModel === "opus") delete s.advisorModel;
 if (s.showClearContextOnPlanAccept === true) delete s.showClearContextOnPlanAccept;
 if (String(s.statusLine?.command).includes("leanagentkit-statusline.js")) delete s.statusLine;
-for (const [k, v] of [["DISABLE_ERROR_REPORTING", "1"], ["CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY", "1"], ["SERENA_USAGE_REPORTING", "false"]])
+for (const [k, v] of [["DISABLE_ERROR_REPORTING", "1"], ["CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY", "1"]])
   if (s.env && s.env[k] === v) delete s.env[k];
 if (s.env && !Object.keys(s.env).length) delete s.env;
 fs.writeFileSync(f, JSON.stringify(s, null, 2) + "\n");

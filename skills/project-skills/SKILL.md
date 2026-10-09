@@ -7,7 +7,7 @@ description: "Install, update, or remove agent skills in one repository for Clau
 
 Run by `project-setup` or `project-add`: use their answers, ask only what is missing. Project scope only.
 
-Never the `ecc@ecc` plugin or `install --profile`: every installed skill and agent puts its description in context each session. Measured on ECC 2.2.3, project target, no hooks: `minimal` 489 files (87 skills, 69 agents, 122 rules), `full` 978 files. ECC context profiles (`ecc profile`, `lean@1`) are a read-only preview in 2.2.3.
+Only what the manifests show: a JavaScript project gets no Python skill, no project gets agents, ECC rules, hooks, or modules unless the user asks for one by name ("ECC extras"). Every installed skill and agent puts its description in context each session, for every task in the repository; rules load whole. Never the `ecc@ecc` plugin or `install --profile`. Measured on ECC 2.2.3, project target, no hooks: `minimal` 489 files (87 skills, 69 agents, 122 rules), `full` 978 files. ECC context profiles (`ecc profile`, `lean@1`) are a read-only preview in 2.2.3.
 
 ## Detect
 
@@ -15,11 +15,11 @@ Manifests: `package.json` dependencies, `pyproject.toml` / `requirements*.txt` /
 
 ## Pick
 
-ECC base plus the matching rows. Skip installed skills. Show the list, one line per skill.
+The SDLC base plus the rows whose manifest is detected, nothing else; a monorepo gets the union of its manifests. Skip installed skills. Show the list, one line per skill.
 
 | Detected | Skills |
 |---|---|
-| ECC base, every code project | `affaan-m/ECC`: `tdd-workflow`, `verification-loop` (`documentation-lookup` and `unified-memory` are global) |
+| SDLC base, every code project | `affaan-m/ECC`: `tdd-workflow` (build), `verification-loop` (verify). `documentation-lookup` is global, `unified-memory` with the `full` profile; OpenSpec skills through `project-openspec` |
 | React | `affaan-m/ECC`: `react-patterns`, `react-performance`, `react-testing` |
 | Next.js | `affaan-m/ECC`: `nextjs-turbopack`; `vercel/next.js`: `next-dev-loop` |
 | Vue / Nuxt | `affaan-m/ECC`: `vue-patterns` / `nuxt4-patterns` |
@@ -48,8 +48,9 @@ ECC base plus the matching rows. Skip installed skills. Show the list, one line 
 | migrations directory | `affaan-m/ECC`: `database-migrations` |
 | Docker / Kubernetes | `affaan-m/ECC`: `docker-patterns` / `kubernetes-patterns` |
 | Playwright | `affaan-m/ECC`: `e2e-testing` |
+| Web UI: React, Next.js, Vue, Nuxt, Angular, Astro, Vite, Payload, Medusa, or `playwright.config.*` | Playwright MCP, section "Playwright MCP" |
 
-Other needs: `npx skills add affaan-m/ECC --list`, `npx -y ecc-universal@latest consult "<need>" --target claude`, `npx skills find <keyword>`.
+Other needs: `npx skills add affaan-m/ECC --list`, `npx -y ecc-universal@2.2.3 consult "<need>" --target claude`, `npx skills find <keyword>`.
 
 ## Install
 
@@ -57,20 +58,60 @@ Route: the answer from `project-setup`; otherwise `.claude/ecc/install-state.jso
 
 ### Skills CLI (default)
 
+Pinned to a commit, recorded in `skills-lock.json`:
+
 ```sh
-npx -y skills add affaan-m/ECC -s <skill> -s <skill> -a claude-code -a codex -y
-npx -y skills add <owner/repo> -s <skill> -a claude-code -a codex -y
+sha=$(git ls-remote https://github.com/<owner/repo> HEAD | cut -c1-40)
+npx -y skills@1.7.2 add https://github.com/<owner/repo>/tree/$sha -s <skill> -s <skill> -a claude-code -a codex -y
 ```
 
-Writes `.agents/skills/<skill>/` (Codex), a symlink in `.claude/skills/` (Claude Code), and `skills-lock.json`. Update: `npx skills update -p` (installer route: step 5 below). Remove: `npx skills remove <skill> -a claude-code -a codex -y`. Restore from the lockfile: `npx skills experimental_install`.
+Writes `.agents/skills/<skill>/` (Codex), a symlink in `.claude/skills/` (Claude Code), and `skills-lock.json`. Update: resolve HEAD again, diff the skill against a shallow clone at the new commit, rerun the add (installer route: step 5 below). Remove: `npx skills remove <skill> -a claude-code -a codex -y`. Restore from the lockfile: `npx skills experimental_install`.
 
 ### ECC installer, per skill (Claude Code)
 
-1. `npx -y ecc-universal@latest install --target claude-project --skills <a,b> --dry-run`. Every selected module must be `skill-<id>`. Skills bound to a whole module install with the skills CLI instead; 15 in 2.2.3, among them `tdd-workflow`, `verification-loop`, `vue-patterns` (`tdd-workflow` alone plans 113 files).
+1. `npx -y ecc-universal@2.2.3 install --target claude-project --skills <a,b> --dry-run`. Every selected module must be `skill-<id>` and every planned path under `.claude/skills/<skill>/`; stop on agents, rules, hooks, or settings beyond `includeCoAuthoredBy`. Skills bound to a whole module install with the skills CLI instead; 15 in 2.2.3, among them `tdd-workflow`, `verification-loop`, `vue-patterns` (`tdd-workflow` alone plans 113 files).
 2. Same command without `--dry-run`. Writes `.claude/skills/<skill>/`, `.claude/ecc/install-state.json`, and, if no attribution setting exists, `"includeCoAuthoredBy": false` in `.claude/settings.json` (turns off the Claude co-author trailer, stays after uninstall). Tell the user; delete the key to keep the trailer.
 3. Codex: the installer writes only to `~/.codex`, so install the same skills with the skills CLI and `-a codex`.
-4. Manage: `npx -y ecc-universal@latest list-installed`, `doctor`, `repair`, `uninstall --target claude-project`.
+4. Manage: `npx -y ecc-universal@2.2.3 list-installed`, `doctor`, `repair`, `uninstall --target claude-project`.
 5. Update: `npx skills check` and `npx skills update -p` skip every skill in a repository that also has installer copies ("Multiple current paths match"). Re-run the installs instead, which overwrite in place: step 2 with the `skill-<id>` modules from the install-state `operations`; `npx -y skills add <source> -s <skill> -a codex -y` for the Codex copies; `-a claude-code -a codex` for skills that are symlinks in `.claude/skills/`. To see what changed first, diff against a shallow clone of the source repository.
+
+### Playwright MCP
+
+Web UI only, project scope, pinned: a server process and about 25 tool schemas per session.
+
+```sh
+claude mcp add --scope project playwright -- npx @playwright/mcp@0.0.83   # writes .mcp.json
+```
+
+Codex, `.codex/config.toml` (loaded in trusted projects):
+
+```toml
+[mcp_servers.playwright]
+command = "npx"
+args = ["@playwright/mcp@0.0.83"]
+```
+
+Container: add `--headless --no-sandbox` after the package in both, and once `npx -y playwright@1.64.0 install --with-deps chrome`. Commit both files. Remove: `claude mcp remove --scope project playwright`, delete the table.
+
+### Scan
+
+After every install, with `uv` on PATH (otherwise say it was skipped):
+
+```sh
+uvx --from cisco-ai-skill-scanner==2.2.2 skill-scanner scan-all .agents/skills --recursive --format summary --fail-on-findings
+```
+
+Installer route: the same for `.claude/skills`. A finding is not a verdict: show it, read the flagged `SKILL.md` and scripts, let the user decide. https://github.com/cisco-ai-defense/skill-scanner
+
+### Report
+
+After install, list everything that loads in this repository every session, with the size of each `description` (skills) or file (agents, rules):
+
+```sh
+find .agents/skills .claude/skills .claude/agents .claude/rules -maxdepth 2 -type f \( -name SKILL.md -o -name '*.md' \) 2>/dev/null
+```
+
+`.claude/skills` symlinks are the `.agents/skills` copies, count them once. Anything outside the picked rows and the user's requests: propose removal.
 
 ## ECC extras
 

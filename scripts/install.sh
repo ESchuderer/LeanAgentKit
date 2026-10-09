@@ -1,5 +1,6 @@
 #!/bin/sh
-# One shot: global rules, agent settings, tools. Delete a line below to skip that step.
+# One shot: global rules, agent settings, tools. Profiles: core (default) or full; or step names to run only those.
+# Inside a container Codex is installed when missing: the dotfiles flow passes no arguments and the Claude Code feature ships no Codex.
 # Windows: run from Git Bash. Needs git, node/npm, and the claude and codex CLIs on PATH.
 set -u
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd); export ROOT
@@ -12,20 +13,15 @@ if [ -n "$b" ]; then
   if win; then b=$(cygpath -u "$b"); else b=$b/bin; fi
   case ":$PATH:" in *":$b:"*) ;; *) PATH="$b:$PATH"; export PATH; say "npm bin folder not on PATH, add it: $b" ;; esac
 fi
-have codex || npm_g @openai/codex || failed="$failed codex"
+core="10-rules.sh 20-settings.sh 30-rtk.sh 40-ponytail.sh 50-mcp.sh 80-skills.sh 90-check.sh"
+full="10-rules.sh 20-settings.sh 30-rtk.sh 40-ponytail.sh 50-mcp.sh 60-indexers.sh 65-memory.sh 66-openspec.sh 70-lsp.sh 80-skills.sh 90-check.sh"
+profile=${1:-core}
+case $profile in core) steps=$core ;; full) steps=$full ;; *) steps=$* ;; esac
+if [ "$profile" = full ] || [ -f /.dockerenv ] || [ -f /run/.containerenv ]; then have codex || npm_g @openai/codex || failed="$failed codex"; fi
 run() { printf '\n== %s\n' "$1"; sh "$ROOT/scripts/install/$1" || failed="$failed $1"; }
-
-run 10-rules.sh
-run 20-settings.sh
-run 30-rtk.sh
-run 40-ponytail.sh
-run 50-mcp.sh
-run 60-indexers.sh
-run 65-memory.sh
-run 70-lsp.sh
-run 80-skills.sh
+for s in $steps; do run "$s"; done
 
 printf '\n'
-case "$failed" in *40-ponytail*) ;; *) if have codex; then say "Manual: in Codex run /hooks and trust the ponytail hooks."; fi ;; esac
+case " $steps " in *" 40-ponytail.sh "*) case "$failed" in *40-ponytail*) ;; *) have codex && say "Manual: in Codex run /hooks and trust the ponytail hooks." ;; esac ;; esac
 say "Restart Claude Code and Codex."
 [ -z "$failed" ] || { printf 'Failed:%s\n' "$failed"; exit 1; }

@@ -8,6 +8,7 @@ run() { printf '\n== %s\n' "$1"; sh "$ROOT/scripts/uninstall/$1" || failed="$fai
 
 run 80-skills.sh
 run 70-lsp.sh
+run 66-openspec.sh
 run 65-memory.sh
 run 60-indexers.sh
 run 50-mcp.sh
