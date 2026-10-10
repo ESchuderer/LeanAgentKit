@@ -1,9 +1,10 @@
 # Shared helpers, sourced by every step. POSIX sh.
 CLAUDE_DIR=${CLAUDE_CONFIG_DIR:-$HOME/.claude}
 CODEX_DIR=${CODEX_HOME:-$HOME/.codex}
-SKILLS_DIR=$HOME/.agents/skills  # skills CLI global folder; its lock is ../.skill-lock.json
-kit_skill() {  # true when the skills CLI lock says $1 was installed from this kit's skills-optional/
-  node -e 'const s = require(process.argv[1]).skills[process.argv[2]]; process.exit(s && s.source === process.argv[3] ? 0 : 1)' "${SKILLS_DIR%/*}/.skill-lock.json" "$1" "$ROOT/skills-optional" 2>/dev/null
+SKILLS_DIR=$HOME/.agents/skills  # skills CLI global folder
+if [ -n "${XDG_STATE_HOME:-}" ]; then SKILLS_LOCK=$XDG_STATE_HOME/skills/.skill-lock.json; else SKILLS_LOCK=$HOME/.agents/.skill-lock.json; fi  # skills CLI 1.7.2 getSkillLockPath
+kit_skill() {  # true when the skills CLI lock says $1 was installed from this kit's skills-optional/; both paths through node's path.resolve (Windows unverified)
+  node -e 'const p = require("path"), s = require(process.argv[1]).skills[process.argv[2]]; process.exit(s && p.resolve(s.source) === p.resolve(process.argv[3]) ? 0 : 1)' "$SKILLS_LOCK" "$1" "$ROOT/skills-optional" 2>/dev/null
 }
 . "$ROOT/scripts/versions.sh"
 say() { printf '%s\n' "$*"; }

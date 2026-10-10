@@ -24,4 +24,6 @@ jobs:
       - name: Declining removes the optional skills
         run: sh scripts/install.sh 85-tracking.sh && test ! -e ~/.agents/skills/issues-github && test ! -e ~/.agents/skills/issues-jira
         env: { LAK_GITHUB_ISSUES: "no", LAK_JIRA: "no" }
-      - run: sh scripts/uninstall.sh
+      - name: Reinstall, then uninstall removes the optional skills
+        run: sh scripts/install.sh 85-tracking.sh && sh scripts/uninstall.sh && test ! -e ~/.agents/skills/issues-github && test ! -e ~/.agents/skills/issues-jira && test ! -e ~/.leanagentkit/tracking.conf
+        env: { LAK_GITHUB_ISSUES: "yes", LAK_JIRA: "yes" }
