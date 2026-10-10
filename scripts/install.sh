@@ -13,8 +13,8 @@ if [ -n "$b" ]; then
   if win; then b=$(cygpath -u "$b"); else b=$b/bin; fi
   case ":$PATH:" in *":$b:"*) ;; *) PATH="$b:$PATH"; export PATH; say "npm bin folder not on PATH, add it: $b" ;; esac
 fi
-core="10-rules.sh 20-settings.sh 30-rtk.sh 40-ponytail.sh 50-mcp.sh 80-skills.sh 90-check.sh"
-full="10-rules.sh 20-settings.sh 30-rtk.sh 40-ponytail.sh 50-mcp.sh 60-indexers.sh 65-memory.sh 66-openspec.sh 70-lsp.sh 80-skills.sh 90-check.sh"
+core="10-rules.sh 20-settings.sh 30-rtk.sh 40-ponytail.sh 50-mcp.sh 80-skills.sh 85-tracking.sh 90-check.sh"
+full="10-rules.sh 20-settings.sh 30-rtk.sh 40-ponytail.sh 50-mcp.sh 60-indexers.sh 65-memory.sh 66-openspec.sh 70-lsp.sh 80-skills.sh 85-tracking.sh 90-check.sh"
 profile=${1:-core}
 case $profile in core) steps=$core ;; full) steps=$full ;; *) steps=$* ;; esac
 if [ "$profile" = full ] || [ -f /.dockerenv ] || [ -f /run/.containerenv ]; then have codex || npm_g @openai/codex || failed="$failed codex"; fi

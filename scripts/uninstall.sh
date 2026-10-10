@@ -6,6 +6,7 @@ BACKUP_DIR="${LAK_STATE_DIR:-$HOME/.leanagentkit}/backups/$(date +%Y%m%d-%H%M%S)
 failed=""
 run() { printf '\n== %s\n' "$1"; sh "$ROOT/scripts/uninstall/$1" || failed="$failed $1"; }
 
+run 85-tracking.sh
 run 80-skills.sh
 run 70-lsp.sh
 run 66-openspec.sh

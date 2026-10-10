@@ -13,10 +13,22 @@ sh scripts/uninstall.sh
 
 | Profile | Steps |
 |---|---|
-| `core` | rules, settings, RTK, Ponytail, Context7 MCP, global skills (`project-*` from `skills/`, ECC `documentation-lookup`), check (context cost, skill scan) |
+| `core` | rules, settings, RTK, Ponytail, Context7 MCP, global skills (`project-*` from `skills/`, ECC `documentation-lookup`), optional issue-tracking skills (asked), check (context cost, skill scan) |
 | `full` | `core` plus Codex when missing, codegraph CLI, ECC Memory Vault CLI with `unified-memory`, OpenSpec CLI, LSP plugins |
 
 The per-repository tools (codegraph, OpenSpec, Playwright MCP, verify hook) are wired by the `project-*` skills; their CLIs install on first use.
+
+Issue tracking (step `85-tracking.sh`, both profiles) asks, when stdin is a terminal, whether to install two optional skills from [skills-optional/](skills-optional/) ([Issue tracking](#issue-tracking)):
+
+1. `Install issues-github: GitHub issues through the gh CLI (yes/no)`
+2. `Install issues-jira: Jira Cloud work items (yes/no)`
+3. after a yes to Jira: `Jira sites and project keys, - clears (https://a.atlassian.net=KEY1,KEY2;https://b.atlassian.net=KEY3)`
+
+Every rerun asks again; Enter keeps the saved answer, an invalid answer is asked again. `LAK_GITHUB_ISSUES=yes|no`, `LAK_JIRA=yes|no` and `LAK_JIRA_SITES` (same format, `-` clears; used when the Jira answer is yes, from `LAK_JIRA`, the question, or the saved choice; it does not turn Jira on) answer a question without asking it. When stdin is not a terminal (`</dev/null`, CI) and the variable is unset: the saved choice in `~/.leanagentkit/tracking.conf`, otherwise no. A background job (`&`) keeps the terminal as stdin and stops at the first question. A skill chosen before and declined now is removed; a skill of the same name from another source stays. The choice is saved after the skills CLI result is checked, so the next run retries a failed one. No token is asked for or stored: sign in with `gh auth login`, `acli jira auth login`, the MCP OAuth sign-in, or environment variables.
+
+```sh
+LAK_GITHUB_ISSUES=yes LAK_JIRA=yes LAK_JIRA_SITES='https://a.atlassian.net=KEY1' sh scripts/install.sh 85-tracking.sh
+```
 
 Requirements:
 
@@ -26,7 +38,7 @@ Requirements:
 
 If the npm folder is not writable, the steps that need `npm i -g` fail with this fix. Steps that need an agent's CLI skip it and say so.
 
-One file per step in `scripts/install/` and `scripts/uninstall/`; the profile lists are in `scripts/install.sh`. Each step calls the tool's own installer. Versions are pinned in [scripts/versions.sh](scripts/versions.sh), Ponytail by commit in [.claude-plugin/marketplace.json](.claude-plugin/marketplace.json) and [.agents/plugins/marketplace.json](.agents/plugins/marketplace.json). Update: `git pull`, rerun the same command; every step reinstalls at the pinned version (RTK from brew or winget: installed once, latest). Edited files are backed up to `~/.leanagentkit/backups/`. CI: [.github/workflows/install.yml](.github/workflows/install.yml) runs `install.sh full` and `uninstall.sh` on a fresh runner with both CLIs on every push.
+One file per step in `scripts/install/` and `scripts/uninstall/`; the profile lists are in `scripts/install.sh`. Each step calls the tool's own installer. Versions are pinned in [scripts/versions.sh](scripts/versions.sh), Ponytail by commit in [.claude-plugin/marketplace.json](.claude-plugin/marketplace.json) and [.agents/plugins/marketplace.json](.agents/plugins/marketplace.json). Update: `git pull`, rerun the same command; every step reinstalls at the pinned version (RTK from brew or winget: installed once, latest). Edited files are backed up to `~/.leanagentkit/backups/`. CI: [.github/workflows/install.yml](.github/workflows/install.yml) runs `install.sh full` and `uninstall.sh` on a fresh runner with both CLIs on every push; the issue-tracking step runs with `LAK_*` set (install), without them (saved choice kept), and declined (skills removed).
 
 After the run: in Codex run `/hooks` and trust the Ponytail hooks; restart both agents.
 
@@ -56,11 +68,11 @@ The lifecycle both agents follow; the short form is the "SDLC" section of the gl
 |---|---|---|
 | Understand | global rules (ask, sources), Context7 through `documentation-lookup`, RTK | `AGENTS.md`, codegraph MCP |
 | Specify | plan mode | OpenSpec `openspec-explore`, `openspec-propose`; `grill-me` on request |
-| Plan | plan mode, `advisorModel`, clear context on plan accept | `openspec-apply-change` tasks |
+| Plan | plan mode, `advisorModel`, clear context on plan accept | `openspec-apply-change` tasks; issues and milestones (`issues-github`), work items (`issues-jira`), optional |
 | Build | Ponytail, LSP diagnostics after each edit | ECC `tdd-workflow`, stack skills |
 | Verify | `/simplify` | ECC `verification-loop`; Playwright MCP for a web UI; verify hook (opt-in): the check command runs when the agent stops and blocks "done" while it fails |
-| Review | `/code-review` before push (global rule), `/security-review`, `/ponytail-review` | `code-review` (mattpocock) on request |
-| Ship | commit, push, pull request | `openspec-archive-change`, `openspec-sync-specs` |
+| Review | `/code-review` before push (global rule), `/security-review`, `/ponytail-review`; unfixed findings become issues (`issues-github`, `issues-jira`, optional) | `code-review` (mattpocock) on request |
+| Ship | commit, push, pull request; `Fixes #n` (GitHub), Smart Commits or a transition (Jira) | `openspec-archive-change`, `openspec-sync-specs` |
 | Hand off | Memory Vault `ecc memory handoff`, `save` (`unified-memory`, `full` profile); auto memory | `.ecc/memory/` in the repository |
 | Maintain | `git pull`, rerun `install.sh` | `project-add`: revalidate skills, codegraph, OpenSpec, `AGENTS.md` |
 
@@ -108,6 +120,25 @@ Skills in [skills/](skills/), installed globally by the script. Claude Code: `/<
 | `project-skills` | skills for the detected stack, project scope: the SDLC base (ECC `tdd-workflow`, `verification-loop`), the matching stack ones, Playwright MCP for a web UI |
 
 `project-setup` and `project-add` run the others. A repository gets only what its manifests show: a JavaScript project gets no Python skill, and no project gets agents, ECC rules, hooks, or modules unless asked for by name; `project-add` lists anything beyond that for removal.
+
+## Issue tracking
+
+Optional skills in [skills-optional/](skills-optional/), installed globally by step `85-tracking.sh` when chosen ([Install](#install)). `80-skills.sh` installs only `skills/`.
+
+| Skill | Does |
+|---|---|
+| `issues-github` | review findings and work items as GitHub issues through `gh`: repository and visibility check (asks before filing in a public or internal repository; never creates a public repository or changes visibility unless told so for that repository), duplicate search over open and closed issues, one issue per finding with an area and a type label, milestones for roadmap phases, body template (Where, Problem, Failure scenario, Proposed fix, Source), `Fixes #n` commits. https://cli.github.com/manual/ |
+| `issues-jira` | the same on Jira Cloud for the sites and project keys in the `jira_sites=` line of `~/.leanagentkit/tracking.conf`: JQL duplicate search, issue types, labels, components, Smart Commits when the site has them enabled, transitions instead of closing |
+
+Both: findings not fixed before a push become issues; a finding that needs a person also goes into the repository's manual to-do file; issue text follows the repository's publication rules, with no secrets or personal data. GitHub transfers open issues only between repositories of one owner, never from a private to a public one; otherwise the skill copies them, and asks first when the target is public or internal. https://docs.github.com/en/issues/tracking-your-work-with-issues/administering-issues/transferring-an-issue-to-another-repository
+
+Jira access, first route that works. The step installs none of them and stores no token.
+
+- Atlassian CLI `acli`, sign in with `acli jira auth login --web`. https://developer.atlassian.com/cloud/acli/guides/install-acli/
+- Atlassian Rovo MCP server, OAuth sign-in: `claude mcp add --transport http atlassian https://mcp.atlassian.com/v2/mcp`, then `/mcp`; `codex mcp add atlassian --url https://mcp.atlassian.com/v2/mcp`, then `codex mcp login atlassian`. Not registered by the kit: an MCP server's tool schemas load in every session. https://support.atlassian.com/atlassian-rovo-mcp-server/docs/getting-started-with-the-atlassian-remote-mcp-server/
+- REST API v3, basic auth with an API token from the environment (`JIRA_EMAIL`, `JIRA_API_TOKEN`). https://developer.atlassian.com/cloud/jira/platform/basic-auth-for-rest-apis/
+
+`uninstall.sh` removes both skills and `tracking.conf`.
 
 ## ECC
 
@@ -162,6 +193,8 @@ Agents and tools run in a Linux container; the repo is bind-mounted. https://cod
    ],
    "containerEnv": { "CLAUDE_CONFIG_DIR": "/home/vscode/.claude" }
    ```
+
+   Issue-tracking skills in the container: add `LAK_GITHUB_ISSUES`, `LAK_JIRA`, and `LAK_JIRA_SITES` to `containerEnv`; without them the dotfiles run installs neither (its commands reach the shell on stdin, so stdin is no terminal: inferred from https://github.com/devcontainers/cli/blob/v0.89.0/src/spec-common/shellServer.ts#L86).
 
 5. Sign in once per volume: `claude`, `codex login --device-auth`.
 

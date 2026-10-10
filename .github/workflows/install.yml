@@ -12,4 +12,16 @@ jobs:
       - name: Claude Code CLI
         run: curl -fsSL https://claude.ai/install.sh | bash && echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - run: sh scripts/install.sh full
+        env: { LAK_GITHUB_ISSUES: "yes", LAK_JIRA: "yes", LAK_JIRA_SITES: "https://example.atlassian.net=DEMO" }
+      - name: Optional skills installed, Jira sites saved, no token
+        run: |
+          test -f ~/.agents/skills/issues-github/SKILL.md
+          test -f ~/.agents/skills/issues-jira/SKILL.md
+          grep -qx "jira_sites=https://example.atlassian.net=DEMO" ~/.leanagentkit/tracking.conf
+          if grep -qi token ~/.leanagentkit/tracking.conf; then echo "tracking.conf holds a token"; exit 1; fi
+      - name: Rerun without LAK_* keeps the saved choice
+        run: sh scripts/install.sh 85-tracking.sh && test -f ~/.agents/skills/issues-github/SKILL.md && test -f ~/.agents/skills/issues-jira/SKILL.md
+      - name: Declining removes the optional skills
+        run: sh scripts/install.sh 85-tracking.sh && test ! -e ~/.agents/skills/issues-github && test ! -e ~/.agents/skills/issues-jira
+        env: { LAK_GITHUB_ISSUES: "no", LAK_JIRA: "no" }
       - run: sh scripts/uninstall.sh
