@@ -7,7 +7,7 @@ description: "File, triage, and work through Jira Cloud work items on the config
 
 ## 1. Site and project
 
-- Configured sites and project keys: the `jira_sites=` line of `~/.leanagentkit/tracking.conf` (`$LAK_STATE_DIR/tracking.conf` when set), format `https://a.atlassian.net=KEY1,KEY2;https://b.atlassian.net=KEY3`. Written by LeanAgentKit `scripts/install/85-tracking.sh`; holds no credentials.
+- Configured sites and project keys: the `jira_sites=` line of `~/.leanagentkit/tracking.conf`, format `https://a.atlassian.net=KEY1,KEY2;https://b.atlassian.net=KEY3`. Written by LeanAgentKit `scripts/install/85-tracking.sh`; holds no credentials.
 - Pick the project in this order: the issue tracker named in the repository's `AGENTS.md`; the only configured key; otherwise ask, then offer to add `Issue tracker: Jira <site> <KEY>` to `AGENTS.md`.
 - Confirm site and key with the user before the first filing in a session. Never write a token into a file, an issue, or a commit.
 
@@ -40,6 +40,8 @@ project = KEY AND text ~ "<terms>" ORDER BY created DESC
 
 - acli: `acli jira workitem search --jql '<jql>' --fields key,summary,status --json`
 - REST: `GET <site>/rest/api/3/search/jql?jql=<jql>&fields=summary,status` (not the removed `/rest/api/3/search`: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-search/)
+
+`<terms>`: two or three plain words from the title. No quotes, wildcards, or operators (`" * ? ( ) + - ! & |`); a quote inside the string is escaped as `\"`. https://support.atlassian.com/jira-software-cloud/docs/search-syntax-for-text-fields/
 
 Existing work item: add a comment instead (`acli jira workitem comment create --key KEY-1 --body-file <file>`).
 

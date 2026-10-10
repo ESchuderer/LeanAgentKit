@@ -33,6 +33,8 @@ Search open and closed issues before filing:
 gh issue list -R <repo> --state all --search "<terms> in:title,body" --json number,title,state
 ```
 
+`<terms>`: two or three plain words from the title, no quotes or search qualifiers.
+
 Existing issue: comment on it (`gh issue comment <n> -R <repo> --body-file -`) instead of filing a new one.
 
 ## 4. One issue per finding

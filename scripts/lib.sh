@@ -1,6 +1,10 @@
 # Shared helpers, sourced by every step. POSIX sh.
 CLAUDE_DIR=${CLAUDE_CONFIG_DIR:-$HOME/.claude}
 CODEX_DIR=${CODEX_HOME:-$HOME/.codex}
+SKILLS_DIR=$HOME/.agents/skills  # skills CLI global folder; its lock is ../.skill-lock.json
+kit_skill() {  # true when the skills CLI lock says $1 was installed from this kit's skills-optional/
+  node -e 'const s = require(process.argv[1]).skills[process.argv[2]]; process.exit(s && s.source === process.argv[3] ? 0 : 1)' "${SKILLS_DIR%/*}/.skill-lock.json" "$1" "$ROOT/skills-optional" 2>/dev/null
+}
 . "$ROOT/scripts/versions.sh"
 say() { printf '%s\n' "$*"; }
 have() { command -v "$1" >/dev/null 2>&1; }

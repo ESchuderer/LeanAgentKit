@@ -24,7 +24,7 @@ Issue tracking (step `85-tracking.sh`, both profiles) asks, when stdin is a term
 2. `Install issues-jira: Jira Cloud work items (yes/no)`
 3. after a yes to Jira: `Jira sites and project keys, - clears (https://a.atlassian.net=KEY1,KEY2;https://b.atlassian.net=KEY3)`
 
-Every rerun asks again; Enter keeps the saved answer, an invalid answer is asked again. `LAK_GITHUB_ISSUES=yes|no`, `LAK_JIRA=yes|no` and `LAK_JIRA_SITES` (same format, `-` clears; used when the Jira answer is yes, from `LAK_JIRA`, the question, or the saved choice; it does not turn Jira on) answer a question without asking it. When stdin is not a terminal (`</dev/null`, CI) and the variable is unset: the saved choice in `~/.leanagentkit/tracking.conf`, otherwise no. A background job (`&`) keeps the terminal as stdin and stops at the first question. A skill chosen before and declined now is removed; a skill of the same name from another source stays. The choice is saved after the skills CLI result is checked, so the next run retries a failed one. No token is asked for or stored: sign in with `gh auth login`, `acli jira auth login`, the MCP OAuth sign-in, or environment variables.
+Every rerun asks again; Enter keeps the saved answer, an invalid answer is asked again. `LAK_GITHUB_ISSUES=yes|no`, `LAK_JIRA=yes|no` and `LAK_JIRA_SITES` (same format, `-` clears; used when the Jira answer is yes, from `LAK_JIRA`, the question, or the saved choice; it does not turn Jira on) answer a question without asking it. When stdin is not a terminal (`</dev/null`, CI) and the variable is unset: the saved choice in `~/.leanagentkit/tracking.conf`, otherwise no. A background job (`&`) keeps the terminal as stdin and stops at the first question. A skill chosen before and declined now is removed when the skills CLI lock (`~/.agents/.skill-lock.json`) names this kit as its source; a skill of the same name from another source stays. End of input (Ctrl-D) keeps the saved answer; an invalid saved `jira_sites` is ignored. The choice is saved after the skills CLI result is checked, so the next run retries a failed one. No token is asked for or stored: sign in with `gh auth login`, `acli jira auth login`, the MCP OAuth sign-in, or environment variables.
 
 ```sh
 LAK_GITHUB_ISSUES=yes LAK_JIRA=yes LAK_JIRA_SITES='https://a.atlassian.net=KEY1' sh scripts/install.sh 85-tracking.sh
@@ -138,7 +138,7 @@ Jira access, first route that works. The step installs none of them and stores n
 - Atlassian Rovo MCP server, OAuth sign-in: `claude mcp add --transport http atlassian https://mcp.atlassian.com/v2/mcp`, then `/mcp`; `codex mcp add atlassian --url https://mcp.atlassian.com/v2/mcp`, then `codex mcp login atlassian`. Not registered by the kit: an MCP server's tool schemas load in every session. https://support.atlassian.com/atlassian-rovo-mcp-server/docs/getting-started-with-the-atlassian-remote-mcp-server/
 - REST API v3, basic auth with an API token from the environment (`JIRA_EMAIL`, `JIRA_API_TOKEN`). https://developer.atlassian.com/cloud/jira/platform/basic-auth-for-rest-apis/
 
-`uninstall.sh` removes both skills and `tracking.conf`.
+`uninstall.sh` removes the skills the kit installed (same lock check) and `tracking.conf`.
 
 ## ECC
 
