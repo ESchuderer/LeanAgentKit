@@ -3,8 +3,12 @@ CLAUDE_DIR=${CLAUDE_CONFIG_DIR:-$HOME/.claude}
 CODEX_DIR=${CODEX_HOME:-$HOME/.codex}
 SKILLS_DIR=$HOME/.agents/skills  # skills CLI global folder
 if [ -n "${XDG_STATE_HOME:-}" ]; then SKILLS_LOCK=$XDG_STATE_HOME/skills/.skill-lock.json; else SKILLS_LOCK=$HOME/.agents/.skill-lock.json; fi  # skills CLI 1.7.2 getSkillLockPath
-kit_skill() {  # true when the skills CLI lock says $1 was installed from this kit's skills-optional/; both paths through node's path.resolve (Windows unverified)
-  node -e 'const p = require("path"), s = require(process.argv[1]).skills[process.argv[2]]; process.exit(s && p.resolve(s.source) === p.resolve(process.argv[3]) ? 0 : 1)' "$SKILLS_LOCK" "$1" "$ROOT/skills-optional" 2>/dev/null
+kit_skill() {  # true when the skills CLI lock says $1 came from a local skills-optional/ folder: this kit, also after it was moved or cloned again
+  node -e 'const s = require(process.argv[1]).skills[process.argv[2]]; process.exit(s && s.sourceType === "local" && /[\\/]skills-optional$/.test(s.source) ? 0 : 1)' "$SKILLS_LOCK" "$1" 2>/dev/null
+}
+kit_drop() {  # queue $1 in $del when it is installed and the kit's; a same-name skill from another source stays
+  [ -e "$SKILLS_DIR/$1" ] || return 0
+  if kit_skill "$1"; then del="$del $1"; else say "$1: in $SKILLS_DIR from another source, kept (npx skills remove $1 -g deletes it)"; fi
 }
 . "$ROOT/scripts/versions.sh"
 say() { printf '%s\n' "$*"; }

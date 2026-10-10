@@ -24,6 +24,12 @@ jobs:
       - name: Declining removes the optional skills
         run: sh scripts/install.sh 85-tracking.sh && test ! -e ~/.agents/skills/issues-github && test ! -e ~/.agents/skills/issues-jira
         env: { LAK_GITHUB_ISSUES: "no", LAK_JIRA: "no" }
-      - name: Reinstall, then uninstall removes the optional skills
+      - name: A same-name skill from another source is neither replaced nor removed
+        run: |
+          mkdir -p ~/.agents/skills/issues-github && echo foreign > ~/.agents/skills/issues-github/SKILL.md
+          LAK_GITHUB_ISSUES=yes sh scripts/install.sh 85-tracking.sh && grep -qx foreign ~/.agents/skills/issues-github/SKILL.md && grep -qx github_issues=no ~/.leanagentkit/tracking.conf
+          LAK_GITHUB_ISSUES=no sh scripts/install.sh 85-tracking.sh && grep -qx foreign ~/.agents/skills/issues-github/SKILL.md
+          rm -r ~/.agents/skills/issues-github
+      - name: Reinstall with the lock under XDG_STATE_HOME, then uninstall removes the optional skills
         run: sh scripts/install.sh 85-tracking.sh && sh scripts/uninstall.sh && test ! -e ~/.agents/skills/issues-github && test ! -e ~/.agents/skills/issues-jira && test ! -e ~/.leanagentkit/tracking.conf
-        env: { LAK_GITHUB_ISSUES: "yes", LAK_JIRA: "yes" }
+        env: { LAK_GITHUB_ISSUES: "yes", LAK_JIRA: "yes", XDG_STATE_HOME: /tmp/lak-xdg }

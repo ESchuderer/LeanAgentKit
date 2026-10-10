@@ -10,7 +10,7 @@ saved() { v=$(get "$1"); [ -n "$v" ] || { echo no; return 0; }; yn "$v" 2>/dev/n
 # key rule from the Data Center docs; Jira Cloud may not allow the underscore (unverified). https://confluence.atlassian.com/adminjiraserver/changing-the-project-key-format-938847081.html
 sites_ok() { [ -z "$1" ] || [ "$1" = - ] || ! printf '%s\n' "$1" | tr ';' '\n' | grep -Evq '^https://[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?/?=[A-Z][A-Z0-9_]+(,[A-Z][A-Z0-9_]+)*$'; }
 fmt='https://host=KEY[,KEY][;https://host=KEY...]'
-[ -z "${LAK_JIRA_SITES:-}" ] || sites_ok "$LAK_JIRA_SITES" || { say "LAK_JIRA_SITES: expected $fmt, got: $LAK_JIRA_SITES"; exit 1; }
+case ${LAK_JIRA:-} in [nN]*) ;; *) [ -z "${LAK_JIRA_SITES:-}" ] || sites_ok "$LAK_JIRA_SITES" || { say "LAK_JIRA_SITES: expected $fmt, got: $LAK_JIRA_SITES"; exit 1; } ;; esac
 ask() {  # ask <question> <default> <check>: the terminal answer, asked again while <check> rejects it; the default when stdin is no terminal or at end of input
   [ -t 0 ] && ( : </dev/tty ) 2>/dev/null || { printf '%s\n' "$2"; return 0; }
   while :; do
@@ -33,12 +33,11 @@ if [ "$jira" = yes ]; then
 fi
 [ "$jira" = yes ] || [ -z "${LAK_JIRA_SITES:-}" ] || say "LAK_JIRA_SITES ignored: jira=$jira, set LAK_JIRA=yes"
 
-# the skills CLI replaces a same-name folder on add and removes by name, so both are gated on its lock: a skill from another source is neither replaced nor removed. The conf is written last, so a failed run is retried
-want() { if [ -e "$SKILLS_DIR/$1" ] && ! kit_skill "$1"; then say "$1: in $SKILLS_DIR from another source, not replaced; remove it for the kit's copy"; else add="$add $1"; fi; }
-drop() { [ -e "$SKILLS_DIR/$1" ] || return 0; if kit_skill "$1"; then del="$del $1"; else say "$1: in $SKILLS_DIR from another source, kept"; fi; }
+# the skills CLI replaces a same-name folder on add and removes by name, so both are gated on its lock (kit_skill in lib.sh): a skill from another source is neither replaced nor removed. The conf is written last, so a failed run is retried
+want() { if [ -e "$SKILLS_DIR/$1" ] && ! kit_skill "$1"; then say "$1: in $SKILLS_DIR from another source, not replaced, saved as no (remove it for the kit's copy)"; return 1; fi; add="$add $1"; }
 add=""; del=""
-if [ "$gh" = yes ]; then want issues-github; else drop issues-github; fi
-if [ "$jira" = yes ]; then want issues-jira; else drop issues-jira; fi
+if [ "$gh" = yes ]; then want issues-github || gh=no; else kit_drop issues-github; fi
+if [ "$jira" = yes ]; then want issues-jira || jira=no; else kit_drop issues-jira; fi
 [ -z "$del" ] || npx -y "skills@$SKILLS_CLI" remove $del -g -y
 [ -z "$add" ] || npx -y "skills@$SKILLS_CLI" add "$ROOT/skills-optional" $(printf ' -s %s' $add) -g -a claude-code -a codex -y
 # the skills CLI exits 0 when a copy or delete fails (EACCES), so check the result
