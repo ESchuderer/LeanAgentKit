@@ -68,10 +68,10 @@ The lifecycle both agents follow; the short form is the "SDLC" section of the gl
 |---|---|---|
 | Understand | global rules (ask, sources), Context7 through `documentation-lookup`, RTK | `AGENTS.md`, codegraph MCP |
 | Specify | plan mode | OpenSpec `openspec-explore`, `openspec-propose`; `grill-me` on request |
-| Plan | plan mode, `advisorModel`, clear context on plan accept | `openspec-apply-change` tasks; issues and milestones (`issues-github`), work items (`issues-jira`), optional |
+| Plan | plan mode, `advisorModel`, clear context on plan accept | `openspec-apply-change` tasks; issues for defects and one-commit tasks, milestones for phases (`issues-github`), work items and Epics (`issues-jira`), optional |
 | Build | Ponytail, LSP diagnostics after each edit | ECC `tdd-workflow`, stack skills |
 | Verify | `/simplify` | ECC `verification-loop`; Playwright MCP for a web UI; verify hook (opt-in): the check command runs when the agent stops and blocks "done" while it fails |
-| Review | `/code-review` before push (global rule), `/security-review`, `/ponytail-review`; unfixed findings become issues (`issues-github`, `issues-jira`, optional) | `code-review` (mattpocock) on request |
+| Review | `/code-review` before push (global rule), `/security-review`, `/ponytail-review`; unfixed findings offered as issues (`issues-github`, `issues-jira`, optional) | `code-review` (mattpocock) on request |
 | Ship | commit, push, pull request; `Fixes #n` (GitHub), Smart Commits or a transition (Jira) | `openspec-archive-change`, `openspec-sync-specs` |
 | Hand off | Memory Vault `ecc memory handoff`, `save` (`unified-memory`, `full` profile); auto memory | `.ecc/memory/` in the repository |
 | Maintain | `git pull`, rerun `install.sh` | `project-add`: revalidate skills, codegraph, OpenSpec, `AGENTS.md` |
@@ -127,10 +127,10 @@ Optional skills in [skills-optional/](skills-optional/), installed globally by s
 
 | Skill | Does |
 |---|---|
-| `issues-github` | review findings and work items as GitHub issues through `gh`: repository and visibility check (asks before filing in a public or internal repository; never creates a public repository or changes visibility unless told so for that repository), duplicate search over open and closed issues, one issue per finding with an area and a type label, milestones for roadmap phases, body template (Where, Problem, Failure scenario, Proposed fix, Source), `Fixes #n` commits. https://cli.github.com/manual/ |
+| `issues-github` | review findings and work items as GitHub issues through `gh`: repository and visibility check (asks before filing in a public or internal repository; never creates a public repository or changes visibility unless told so for that repository), duplicate search over open and closed issues, one issue per finding with an area and a type label (`bug`, `enhancement`, `performance`; `needs-source-check` when a person must decide), milestones for roadmap phases, body template (Where, Problem, Failure scenario, Proposed fix, Source), `Fixes #n` commits. https://cli.github.com/manual/ |
 | `issues-jira` | the same on Jira Cloud for the sites and project keys in the `jira_sites=` line of `~/.leanagentkit/tracking.conf`: JQL duplicate search, issue types, labels, components, Smart Commits when the site has them enabled, transitions instead of closing |
 
-Both: findings not fixed before a push become issues; a finding that needs a person also goes into the repository's manual to-do file; issue text follows the repository's publication rules, with no secrets or personal data. GitHub transfers open issues only between repositories of one owner, never from a private to a public one; otherwise the skill copies them, and asks first when the target is public or internal. https://docs.github.com/en/issues/tracking-your-work-with-issues/administering-issues/transferring-an-issue-to-another-repository
+Both: an issue is a defect, a review finding, or a one-commit task; in a repository with `openspec/`, work that changes behaviour is an OpenSpec change that names the issue and closes it from the commit that completes its `tasks.md`; unfixed review findings are offered as issues and filed after the user agrees; issue text follows the repository's publication rules, with no secrets or personal data. GitHub transfers open issues only between repositories of one owner, never from a private to a public one; otherwise the skill copies them, and asks first when the target is public or internal. https://docs.github.com/en/issues/tracking-your-work-with-issues/administering-issues/transferring-an-issue-to-another-repository
 
 Jira access, first route that works. The step installs none of them and stores no token.
 
